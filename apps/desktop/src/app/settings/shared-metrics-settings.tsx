@@ -90,6 +90,8 @@ export function SharedMetricsSettings() {
 
   // An older backend has no shared_metrics.* methods: keep the control, disabled and explained.
   const unavailable = loaded && consent === null
+  // The administrator's managed scope forbids sending: the switch shows that, off and locked.
+  const locked = consent?.send_locked === true
   const sharing = consent?.send ?? false
 
   return (
@@ -98,8 +100,8 @@ export function SharedMetricsSettings() {
         below={<DocsLink href={SHARED_METRICS_DOCS_URL}>{copy.whatIsCollected}</DocsLink>}
         checked={sharing}
         description={copy.sendDesc}
-        disabled={!consent || busy}
-        hint={unavailable ? copy.unavailable : undefined}
+        disabled={!consent || busy || locked}
+        hint={locked ? copy.sendLocked : unavailable ? copy.unavailable : undefined}
         label={copy.sendLabel}
         onChange={on => void save({ enabled: on, send: on })}
       />

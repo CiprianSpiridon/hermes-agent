@@ -4518,6 +4518,7 @@
     "sharedMetrics.saveFailed",
     "sharedMetrics.sendDesc",
     "sharedMetrics.sendLabel",
+    "sharedMetrics.sendLocked",
     "sharedMetrics.sending",
     "sharedMetrics.share",
     "sharedMetrics.stripBody",

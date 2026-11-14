@@ -12,7 +12,8 @@ Desktop paints the offer as a composer strip (``consent-strip.tsx`` over the ``s
 RPCs). The terminal asks at the end of every ``hermes setup`` flow and, for a profile that never
 answered, once before an interactive ``hermes`` / ``hermes --tui`` chat (which also covers the
 dashboard's Chat tab, a PTY-hosted TUI). The messaging gateway never asks: a chat participant is
-not the install owner.
+not the install owner. An administrator's managed ``telemetry.shared_metrics.send: false`` answers
+the sending half for every profile (``send_locked``): no surface offers it, and no answer stores it.
 """
 
 from __future__ import annotations
@@ -21,6 +22,8 @@ import logging
 import os
 import sys
 from typing import Any
+
+from .shared_metrics_send_config import managed_scope_forbids_sending
 
 logger = logging.getLogger(__name__)
 
@@ -55,12 +58,16 @@ OFFER_VERSION = 2
 
 
 def consent_state(raw_cfg: Any) -> dict:
-    """``{enabled, send, decided, reask}`` from a RAW config mapping (no defaults merged). ``reask``:
-    an "off" answer from before ``OFFER_VERSION`` that may never have been seen; it reads undecided
-    so every surface offers it once more. An opt-in was always a deliberate pick and stays, including
-    a collect-only answer from before the offer dropped that choice."""
+    """``{enabled, send, decided, reask, send_locked}`` from a RAW config mapping (no defaults merged).
+    ``reask``: an "off" answer from before ``OFFER_VERSION`` that may never have been seen; it reads
+    undecided so every surface offers it once more. An opt-in was always a deliberate pick and stays,
+    including a collect-only answer from before the offer dropped that choice. ``send_locked``: the
+    managed scope forbids sending, so there is nothing to offer and the answer is decided; collection
+    stays the profile's own."""
     section = _section(raw_cfg)
     enabled = section.get("enabled") is True
+    if managed_scope_forbids_sending():
+        return {"enabled": enabled, "send": False, "decided": True, "reask": False, "send_locked": True}
     answered = "enabled" in section or "send" in section
     reask = answered and not enabled and section.get("offer_version") != OFFER_VERSION
     return {
@@ -68,6 +75,7 @@ def consent_state(raw_cfg: Any) -> dict:
         "send": enabled and section.get("send") is True,
         "decided": answered and not reask,
         "reask": reask,
+        "send_locked": False,
     }
 
 
@@ -93,7 +101,8 @@ def save_consent(enabled: bool, send: bool, config: dict | None = None) -> None:
     """Write both keys into the user's raw config.yaml now. ``save_config`` strips values equal
     to the shipped defaults, so a "No thanks" (both false) saved through it vanished and the
     profile was asked again on every surface. ``config`` (a caller's in-memory copy, e.g. the
-    wizard's) gets the same answer so its later save agrees. Sending cannot outlive collection."""
+    wizard's) gets the same answer so its later save agrees. Sending cannot outlive collection, nor
+    pass the managed scope's ceiling."""
     from hermes_cli.config import (
         _write_user_config, get_config_path, is_managed, managed_error, require_readable_config_before_write,
     )
@@ -102,7 +111,7 @@ def save_consent(enabled: bool, send: bool, config: dict | None = None) -> None:
     if is_managed():
         managed_error("save configuration")
         return
-    send = enabled and send
+    send = enabled and send and not managed_scope_forbids_sending()
     config_path = get_config_path()
     user_config = require_readable_config_before_write(config_path)
     set_answer(user_config, enabled, send)

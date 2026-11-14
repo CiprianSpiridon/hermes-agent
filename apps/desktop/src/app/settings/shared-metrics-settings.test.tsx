@@ -67,6 +67,20 @@ describe('SharedMetricsSettings', () => {
     ])
   })
 
+  it('shows a managed send ceiling as off and locked, with the reason', async () => {
+    backend({ enabled: true, send: false, decided: true, send_locked: true })
+
+    render(<SharedMetricsSettings />)
+
+    expect(await screen.findByText(copy.sendLocked)).toBeTruthy()
+    const share = screen.getByRole('switch', { name: copy.sendLabel })
+    expect(share.getAttribute('aria-checked')).toBe('false')
+    expect(share.hasAttribute('disabled')).toBe(true)
+
+    fireEvent.click(share)
+    expect(setCalls()).toEqual([])
+  })
+
   it('reads a retired collect-only answer as not sharing', async () => {
     backend({ enabled: true, send: false, decided: true })
 

@@ -133,6 +133,7 @@ export const zhHantOverrides = {
     sendLabel: '與 Nous 分享使用統計',
     sendDesc: '僅限計數，每天傳送一次，並附帶此設定檔的隨機 ID。絕不包含你的訊息、檔案、路徑或錯誤文字。',
     unavailable: '請更新 Hermes 後端以變更此設定。',
+    sendLocked: '管理員已關閉傳送。',
     stripBody: '僅限計數，絕不包含你的訊息或檔案。',
     stripReaskBody: '再次詢問：舊版本可能在你看到此問題之前就已儲存了「不用了」。',
     stripChoices: { share: '與 Nous 分享', off: '不用了' },

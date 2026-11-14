@@ -24,6 +24,7 @@ export const esSharedMetrics = {
   sendDesc:
     'Solo recuentos, enviados una vez al día con un ID aleatorio para este perfil. Nunca tus mensajes, archivos, rutas ni textos de error.',
   unavailable: 'Actualiza el backend de Hermes para cambiar este ajuste.',
+  sendLocked: 'Tu administrador ha desactivado el envío.',
   stripBody: 'Solo recuentos. Nunca tus mensajes ni archivos.',
   stripReaskBody:
     'Te lo preguntamos de nuevo: una versión anterior podía guardar «No, gracias» antes de que vieras esta pregunta.',

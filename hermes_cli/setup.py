@@ -531,6 +531,11 @@ _SEND_CONSENT_EXPLAINER = (
 def setup_telemetry(config: dict):
     """Turn shared metrics on (collect and send to Nous) or off: one answer sets both keys."""
     print_header("Shared Metrics")
+    from hermes_cli.observability.shared_metrics_send_config import managed_scope_forbids_sending
+
+    if managed_scope_forbids_sending():
+        print_info("Sending is turned off by your administrator's managed configuration.")
+        return
     _info("Shared metrics contain only bounded counters: activity, session length,",
           "outcomes, error classes (with a fixed-list reason when a memory write or",
           "context compression is refused, fails or is skipped), model routes and",
@@ -548,7 +553,6 @@ def setup_telemetry(config: dict):
     # The answer is written to config.yaml here, not by the caller's later save: that save strips
     # values equal to the defaults, so a "no" would vanish and every surface would ask again.
     from hermes_cli.observability.shared_metrics_consent import save_consent
-
     shared_metrics = _sub_dict(_sub_dict(config, "telemetry"), "shared_metrics")
     sharing = shared_metrics.get("enabled") is True and shared_metrics.get("send") is True
     # One answer for both keys: off also withdraws send consent and stops collection.

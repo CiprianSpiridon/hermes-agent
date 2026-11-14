@@ -809,8 +809,11 @@ telemetry:
 - `send` requires `enabled`. It does **not** imply it: a transmission flag must
   not silently switch on collection. `send: true` with `enabled: false` warns
   and does nothing.
-- Like `enabled`, `send` is profile-owned and is not overridden by
-  managed-scope configuration.
+- Like `enabled`, `send` is profile-owned, with one exception: a managed-scope
+  `telemetry.shared_metrics.send: false` forbids sending for every profile.
+  It is a ceiling only: a managed `true` opts no profile in. Under it no
+  surface offers sharing (the answer reads decided, `send_locked`), Desktop's
+  switch shows off and locked, and no answer stores `send: true`.
 
 Both keys are asked once per profile, with the same two answers everywhere
 (Share with Nous / No thanks). Each answer sets both keys: "Share with Nous"

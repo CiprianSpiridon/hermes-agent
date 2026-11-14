@@ -44,12 +44,13 @@ def _endpoint_is_safe(endpoint: str) -> bool:
     return parsed.scheme == "http" and (parsed.hostname or "") in _LOCAL_HOSTS
 
 
-def _managed_scope_forbids_sending() -> bool:
+def managed_scope_forbids_sending() -> bool:
     """Return whether the managed scope sets the outbound-metrics ceiling.
 
     Collection consent remains profile-owned, but an administrator may prohibit
     network transmission for every profile. A managed ``true`` deliberately has
-    no effect: it must never create consent on the user's behalf.
+    no effect: it must never create consent on the user's behalf. The consent
+    surfaces read it too, so none of them offers or stores a send that cannot happen.
     """
     from hermes_cli.managed_scope import load_managed_config
 
@@ -74,7 +75,7 @@ def resolve_send_config(config: dict | None) -> SendConfig:
     shared = shared if isinstance(shared, dict) else {}
 
     enabled = shared.get("enabled") is True
-    send_requested = shared.get("send") is True and not _managed_scope_forbids_sending()
+    send_requested = shared.get("send") is True and not managed_scope_forbids_sending()
 
     if send_requested and not enabled:
         # Loud, not silent: the user believes telemetry is being sent, and it never will be.

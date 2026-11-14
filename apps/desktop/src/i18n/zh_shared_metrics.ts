@@ -20,6 +20,7 @@ export const zhSharedMetrics = {
   sendLabel: '与 Nous 分享使用统计',
   sendDesc: '仅包含计数，每天发送一次，并附带此配置文件的随机 ID。绝不包含你的消息、文件、路径或错误文本。',
   unavailable: '请更新 Hermes 后端以更改此设置。',
+  sendLocked: '管理员已关闭发送。',
   stripBody: '仅包含计数，绝不包含你的消息或文件。',
   stripReaskBody: '再次询问：旧版本可能在你看到此问题之前就已保存了“不用了”。',
   stripChoices: { share: '分享给 Nous', off: '不用了' },

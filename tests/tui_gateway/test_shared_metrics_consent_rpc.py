@@ -43,13 +43,13 @@ def test_send_without_collection_is_normalized_off_and_closes_the_consent_window
     launch, worker = _bind_homes(monkeypatch, tmp_path)
 
     assert _call("shared_metrics.set", {"profile": "code", "enabled": True, "send": True}) == {
-        "enabled": True, "send": True, "decided": True, "reask": False}
+        "enabled": True, "send": True, "decided": True, "reask": False, "send_locked": False}
     [(opened, closed)] = _windows(worker)
     assert opened and closed is None
 
     # send=true alone is refused: collection off withdraws send consent, in config AND in the store.
     assert _call("shared_metrics.set", {"profile": "code", "enabled": False, "send": True}) == {
-        "enabled": False, "send": False, "decided": True, "reask": False}
+        "enabled": False, "send": False, "decided": True, "reask": False, "send_locked": False}
     assert _shared_metrics(worker) == {"enabled": False, "send": False, "offer_version": 2}
     [(_, closed)] = _windows(worker)
     assert closed is not None
@@ -61,7 +61,7 @@ def test_send_without_collection_is_normalized_off_and_closes_the_consent_window
 def test_status_is_undecided_until_a_key_is_written(tmp_path, monkeypatch):
     _launch, worker = _bind_homes(monkeypatch, tmp_path)
 
-    unasked = {"enabled": False, "send": False, "decided": False, "reask": False}
+    unasked = {"enabled": False, "send": False, "decided": False, "reask": False, "send_locked": False}
     assert _call("shared_metrics.status", {"profile": "code"}) == unasked
 
     # A "No thanks" from before the type-ahead fix (no offer_version) may never have been seen:
@@ -76,7 +76,7 @@ def test_status_is_undecided_until_a_key_is_written(tmp_path, monkeypatch):
     (worker / "config.yaml").write_text(
         yaml.safe_dump({"telemetry": {"shared_metrics": {"enabled": True, "send": False}}}), encoding="utf-8")
     assert _call("shared_metrics.status", {"profile": "code"}) == {
-        "enabled": True, "send": False, "decided": True, "reask": False}
+        "enabled": True, "send": False, "decided": True, "reask": False, "send_locked": False}
 
 
 def test_only_the_first_run_answer_records_desktop_setup_completed(tmp_path, monkeypatch):

@@ -271,12 +271,14 @@ class SharedMetricsConsentResult(Result):
     """The focused profile's ``telemetry.shared_metrics`` opt-ins. ``send`` is never true while
     ``enabled`` is false; ``decided`` = either key is written in config.yaml (the shipped defaults
     are not an answer) and it is not a ``reask``: an "off" from before the type-ahead fix, offered
-    once more with the reason."""
+    once more with the reason. ``send_locked``: the administrator's managed scope sets
+    ``telemetry.shared_metrics.send: false``, so ``send`` stays false and nothing is offered."""
 
     enabled: bool
     send: bool
     decided: bool
     reask: bool = False
+    send_locked: bool = False
 
 
 method("shared_metrics.status", params=ProfileParams, result=SharedMetricsConsentResult,

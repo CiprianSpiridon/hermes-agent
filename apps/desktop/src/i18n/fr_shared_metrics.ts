@@ -25,6 +25,7 @@ export const frSharedMetrics = {
   sendDesc:
     'Uniquement des comptages, envoyés une fois par jour avec un identifiant aléatoire pour ce profil. Jamais vos messages, fichiers, chemins ni textes d’erreur.',
   unavailable: 'Mettez à jour le backend Hermes pour modifier ce réglage.',
+  sendLocked: 'Votre administrateur a désactivé l’envoi.',
   stripBody: 'Uniquement des comptages. Jamais vos messages ni vos fichiers.',
   stripReaskBody:
     'Nouvelle demande : une version précédente pouvait enregistrer « Non merci » avant que vous ne voyiez cette question.',

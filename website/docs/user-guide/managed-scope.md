@@ -109,6 +109,23 @@ When the managed `config.yaml` pins a non-empty `terminal.backend`, a profile
 passes the keys as environment) loads as absent with a warning; without that
 pin the read error still stops Hermes.
 
+## Turning off shared-metrics sending
+
+Shared-metrics consent belongs to each profile, so a managed scope cannot opt a
+profile in or out of collection. It can forbid sending for every profile:
+
+```yaml
+telemetry:
+  shared_metrics:
+    send: false
+```
+
+This is a one-way ceiling. No profile sends, whatever its own `config.yaml`
+says, and a managed `send: true` has no effect. Hermes stops offering to share:
+the terminal, Desktop and dashboard offers count as answered, `hermes setup
+telemetry` explains the setting instead of asking, and Desktop's switch in
+Settings › Safety › Privacy & network shows sharing off and locked.
+
 ## Seeing what's managed
 
 ```bash

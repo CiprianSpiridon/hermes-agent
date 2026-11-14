@@ -18,6 +18,8 @@ export interface SharedMetricsTranslations {
   sendLabel: string
   sendDesc: string
   unavailable: string
+  /** Under the switch while the managed scope forbids sending (`send_locked`). */
+  sendLocked: string
   stripBody: string
   stripReaskBody: string
   stripChoices: { share: string; off: string }

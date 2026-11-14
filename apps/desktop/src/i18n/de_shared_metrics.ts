@@ -24,6 +24,7 @@ export const deSharedMetrics = {
   sendDesc:
     'Nur Zählwerte, einmal täglich mit einer zufälligen ID für dieses Profil gesendet. Niemals Ihre Nachrichten, Dateien, Pfade oder Fehlertexte.',
   unavailable: 'Aktualisieren Sie das Hermes-Backend, um diese Einstellung zu ändern.',
+  sendLocked: 'Ihr Administrator hat das Senden ausgeschaltet.',
   stripBody: 'Nur Zählwerte. Niemals Ihre Nachrichten oder Dateien.',
   stripReaskBody:
     'Wir fragen noch einmal: Eine frühere Version konnte „Nein danke“ speichern, bevor Sie diese Frage gesehen haben.',

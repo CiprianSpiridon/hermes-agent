@@ -136,7 +136,7 @@ def test_chat_offer_asks_an_undecided_profile_once(monkeypatch):
 
     assert len(asked) == 1
     assert asked[0][1] == ["Share with Nous", "No thanks"]
-    assert consent.consent_state(read_raw_config()) == {"enabled": True, "send": True, "decided": True, "reask": False}
+    assert consent.consent_state(read_raw_config()) == {"enabled": True, "send": True, "decided": True, "reask": False, "send_locked": False}
 
 
 def test_offer_drops_keys_typed_before_it_appeared(monkeypatch):
@@ -176,7 +176,7 @@ def test_unseen_no_thanks_is_asked_once_more_and_then_settled(monkeypatch):
     consent.offer_consent_before_chat(argparse.Namespace())
 
     assert len(shown) == 1 and shown[0].startswith(consent._REASK_NOTE)
-    assert consent.consent_state(read_raw_config()) == {"enabled": False, "send": False, "decided": True, "reask": False}
+    assert consent.consent_state(read_raw_config()) == {"enabled": False, "send": False, "decided": True, "reask": False, "send_locked": False}
 
 
 def test_every_cli_promise_that_pre_opt_in_data_stays_local_names_the_install_note():

@@ -23,6 +23,7 @@ export const enSharedMetrics: Translations['sharedMetrics'] = {
   sendDesc:
     'Counts only, sent once a day with a random ID for this profile. Never your messages, files, paths or error text.',
   unavailable: 'Update the Hermes backend to change this setting.',
+  sendLocked: 'Your administrator turned sending off.',
   stripBody: 'Counts only. Never your messages or files.',
   stripReaskBody: 'Asking once more: an earlier version could save “No thanks” before you saw this.',
   stripChoices: { share: 'Share with Nous', off: 'No thanks' },

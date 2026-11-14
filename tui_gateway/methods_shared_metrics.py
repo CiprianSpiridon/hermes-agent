@@ -18,7 +18,7 @@ _profile_scoped = _registry.profile_scoped
 
 
 def _shared_metrics_consent(cfg) -> dict:
-    """The one ``{enabled, send, decided, reask}`` reading every surface shares (CLI offer included)."""
+    """The one ``{enabled, send, decided, reask, send_locked}`` reading every surface shares (CLI offer included)."""
     from hermes_cli.observability.shared_metrics_consent import consent_state
 
     return consent_state(cfg)
@@ -44,8 +44,8 @@ def _tui_model_friction(signal, session, turns=1):
 @method("shared_metrics.status")
 @_profile_scoped
 def _(rid, params: dict) -> dict:
-    """``{enabled, send, decided, reask}`` for the focused profile. A pure read of config.yaml (no defaults
-    merged, so ``decided`` sees only what the user wrote)."""
+    """``{enabled, send, decided, reask, send_locked}`` for the focused profile. A pure read of config.yaml
+    (no defaults merged, so ``decided`` sees only what the user wrote) and of the managed send ceiling."""
     try:
         return _ok(rid, _shared_metrics_consent(_load_cfg()))
     except Exception as e:
@@ -57,10 +57,13 @@ def _(rid, params: dict) -> dict:
 def _(rid, params: dict) -> dict:
     """Write both opt-ins at once and reconcile the consent windows. ``send`` is forced off when
     ``enabled`` is off (the wizard's rule: sending cannot outlive collection, and turning collection
-    off withdraws send consent). ``first_run`` marks the Desktop first-run answer, which also records
-    the setup-completed metric. Answers the stored ``{enabled, send, decided, reask}``."""
+    off withdraws send consent) and under the managed scope's send ceiling. ``first_run`` marks the
+    Desktop first-run answer, which also records the setup-completed metric. Answers the stored
+    ``{enabled, send, decided, reask, send_locked}``."""
+    from hermes_cli.observability.shared_metrics_send_config import managed_scope_forbids_sending
+
     enabled = params.get("enabled") is True
-    send = enabled and params.get("send") is True
+    send = enabled and params.get("send") is True and not managed_scope_forbids_sending()
     from hermes_cli.config_backend import ConfigWriteError, supports_file_tooling
     from hermes_cli.observability.shared_metrics_consent import OFFER_VERSION, set_answer
     try:
